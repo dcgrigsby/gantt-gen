@@ -196,10 +196,10 @@ func RenderSVG(project *model.Project) (string, error) {
 		svgTasks = append(svgTasks, st)
 	}
 
-	// Add extra padding to ensure bottom milestone isn't clipped
-	// A rotated 10x10 square needs ~14px diagonal, so ~7px extends below center
+	// Add extra padding to ensure milestones aren't clipped
+	// A rotated 10x10 square needs ~14px diagonal, so ~7px extends in all directions
 	totalHeight := headerHeight + (len(project.Tasks) * rowHeight) + 110
-	totalWidth := 220 + timelineWidth + 100 // task column + timeline + padding
+	totalWidth := 220 + timelineWidth + 120 // task column + timeline + right padding for milestones
 
 	data := svgData{
 		Name:          project.Name,

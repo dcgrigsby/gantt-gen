@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="6270" height="550" viewBox="0 0 6270 550">
+<svg xmlns="http://www.w3.org/2000/svg" width="6290" height="550" viewBox="0 0 6290 550">
     <!-- Background -->
-    <rect width="6270" height="550" fill="#ffffff"/>
+    <rect width="6290" height="550" fill="#ffffff"/>
 
     <!-- Title -->
     <text x="20" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">
@@ -308,7 +308,7 @@
 
     <!-- Legend -->
     <g class="legend" transform="translate(20, 470)">
-        <rect width="6270" height="60" fill="#f8f9fa" rx="4"/>
+        <rect width="6290" height="60" fill="#f8f9fa" rx="4"/>
 
         <rect x="10" y="15" width="20" height="12" fill="#4a90e2" rx="2"/>
         <text x="35" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H2 Tasks</text>
