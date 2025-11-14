@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="420" viewBox="0 0 1100 420">
+<svg xmlns="http://www.w3.org/2000/svg" width="1795" height="430" viewBox="0 0 1795 430">
     <!-- Background -->
-    <rect width="1100" height="420" fill="#ffffff"/>
+    <rect width="1795" height="430" fill="#ffffff"/>
 
     <!-- Title -->
     <text x="20" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">
@@ -14,7 +14,7 @@
         Task
     </text>
 
-    <rect x="220" y="50" width="800" height="30" fill="#f8f9fa" stroke="#ddd"/>
+    <rect x="220" y="50" width="1475" height="30" fill="#f8f9fa" stroke="#ddd"/>
     <text x="230" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
         Timeline
     </text>
@@ -34,11 +34,11 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="80" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="80" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="220" y="85" width="189.83050847457628" height="20"
+        <rect x="220" y="85" width="350" height="20"
               fill="#4a90e2" rx="3"/>
         <text x="225" y="98"
               font-family="Arial, sans-serif" font-size="10" fill="white">
@@ -60,13 +60,13 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="110" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="110" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="409.8305084745763" y="115" width="284.7457627118644" height="20"
+        <rect x="570" y="115" width="525" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="414.8305084745763" y="128"
+        <text x="575" y="128"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Feb 6
         </text>
@@ -86,13 +86,13 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="140" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="140" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="409.8305084745763" y="145" width="189.83050847457628" height="20"
+        <rect x="570" y="145" width="350" height="20"
               fill="#7eb0e8" rx="3"/>
-        <text x="414.8305084745763" y="158"
+        <text x="575" y="158"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Jan 30
         </text>
@@ -112,13 +112,13 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="170" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="170" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="409.8305084745763" y="175" width="216.94915254237287" height="20"
+        <rect x="570" y="175" width="400" height="20"
               fill="#7eb0e8" rx="3"/>
-        <text x="414.8305084745763" y="188"
+        <text x="575" y="188"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Feb 1
         </text>
@@ -138,13 +138,13 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="200" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="200" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="626.7796610169491" y="205" width="94.91525423728814" height="20"
+        <rect x="970" y="205" width="175" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="631.7796610169491" y="218"
+        <text x="975" y="218"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Feb 1 - Feb 8
         </text>
@@ -164,12 +164,12 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="230" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="230" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="721.6949152542372" y="245" width="10" height="10"
-              fill="#e74c3c" transform="rotate(45 721.6949152542372 245)"/>
+        <rect x="1145" y="245" width="10" height="10"
+              fill="#e74c3c" transform="rotate(45 1150 250)"/>
         
     </g>
     
@@ -186,13 +186,13 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="260" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="260" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="721.6949152542372" y="265" width="54.23728813559322" height="20"
+        <rect x="1145" y="265" width="100" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="726.6949152542372" y="278"
+        <text x="1150" y="278"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Feb 8 - Feb 12
         </text>
@@ -212,19 +212,19 @@
         
 
         <!-- Timeline -->
-        <rect x="220" y="290" width="800" height="30" fill="white" stroke="#eee"/>
+        <rect x="220" y="290" width="1475" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         
-        <rect x="1020" y="305" width="10" height="10"
-              fill="#e74c3c" transform="rotate(45 1020 305)"/>
+        <rect x="1695" y="305" width="10" height="10"
+              fill="#e74c3c" transform="rotate(45 1700 310)"/>
         
     </g>
     
 
     <!-- Legend -->
-    <g class="legend" transform="translate(20, 340)">
-        <rect width="1100" height="60" fill="#f8f9fa" rx="4"/>
+    <g class="legend" transform="translate(20, 350)">
+        <rect width="1795" height="60" fill="#f8f9fa" rx="4"/>
 
         <rect x="10" y="15" width="20" height="12" fill="#4a90e2" rx="2"/>
         <text x="35" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H2 Tasks</text>

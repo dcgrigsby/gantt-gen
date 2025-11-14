@@ -10,12 +10,10 @@ go build -o gantt-gen
 
 echo ""
 echo "Testing with example file..."
-./gantt-gen examples/sample-project.md examples/test-output.html
 ./gantt-gen examples/sample-project.md examples/test-output.svg
 
 echo ""
-echo "Checking output files exist..."
-test -f examples/test-output.html && echo "✓ HTML output created"
+echo "Checking output file exists..."
 test -f examples/test-output.svg && echo "✓ SVG output created"
 
 echo ""

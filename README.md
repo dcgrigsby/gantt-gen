@@ -9,7 +9,7 @@ A Go CLI tool that generates beautiful Gantt charts from markdown files.
 - 📅 Flexible date formats (ISO 8601 or natural language)
 - 🔄 Dependency management (finish-to-start, start-to-start, etc.)
 - 📆 Calendar support (weekends, holidays, business days)
-- 🎨 Multiple output formats (HTML/CSS or SVG)
+- 🎨 SVG output format
 - ⚡ Fast and standalone (no dependencies at runtime)
 
 ## Installation
@@ -29,7 +29,6 @@ go build
 ## Usage
 
 ```bash
-gantt-gen input.md output.html
 gantt-gen input.md output.svg
 ```
 
@@ -68,7 +67,7 @@ See `examples/sample-project.md` for a complete example project.
 Generate the example:
 
 ```bash
-gantt-gen examples/sample-project.md examples/output.html
+gantt-gen examples/sample-project.md examples/output.svg
 ```
 
 ## Development

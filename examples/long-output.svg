@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="6270" height="550" viewBox="0 0 6270 550">
+    <!-- Background -->
+    <rect width="6270" height="550" fill="#ffffff"/>
+
+    <!-- Title -->
+    <text x="20" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">
+        Long Software Development Project
+    </text>
+
+    <!-- Column headers -->
+    <rect x="20" y="50" width="200" height="30" fill="#f8f9fa" stroke="#ddd"/>
+    <text x="30" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
+        Task
+    </text>
+
+    <rect x="220" y="50" width="5950" height="30" fill="#f8f9fa" stroke="#ddd"/>
+    <text x="230" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
+        Timeline
+    </text>
+
+    <!-- Tasks -->
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="80" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="100"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 1: Requirements
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="80" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="220" y="85" width="525" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="225" y="98"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jan 1 - Jan 22
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="110" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="130"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 2: Architecture Design
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="110" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="745" y="115" width="700" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="750" y="128"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jan 22 - Feb 19
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="140" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="160"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 3: Database Design
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="140" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="1445" y="145" width="525" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="1450" y="158"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Feb 19 - Mar 11
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="170" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="190"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 4: Backend Development
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="170" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="1970" y="175" width="1400" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="1975" y="188"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Mar 11 - May 6
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="200" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="220"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 5: Frontend Development
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="200" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="1970" y="205" width="1225" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="1975" y="218"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Mar 11 - Apr 29
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="230" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="250"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 6: Integration Testing
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="230" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="3370" y="235" width="700" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="3375" y="248"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            May 6 - Jun 3
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="260" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="280"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 7: User Acceptance Testing
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="260" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="4070" y="265" width="525" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="4075" y="278"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jun 3 - Jun 24
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="290" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="310"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 8: Bug Fixes
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="290" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="4595" y="295" width="700" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="4600" y="308"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jun 24 - Jul 22
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="320" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="340"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 9: Performance Optimization
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="320" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="5295" y="325" width="525" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="5300" y="338"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jul 22 - Aug 12
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="350" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="370"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 10: Documentation
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="350" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="5295" y="355" width="350" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="5300" y="368"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Jul 22 - Aug 5
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="380" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="400"
+              font-family="Arial, sans-serif" font-size="13"
+              fill="#333">
+            Phase 11: Deployment Preparation
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="380" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="5820" y="385" width="350" height="20"
+              fill="#4a90e2" rx="3"/>
+        <text x="5825" y="398"
+              font-family="Arial, sans-serif" font-size="10" fill="white">
+            Aug 12 - Aug 26
+        </text>
+        
+    </g>
+    
+    <g class="task-row">
+        <!-- Task name -->
+        <rect x="20" y="410" width="200" height="30" fill="white" stroke="#eee"/>
+        <text x="30" y="430"
+              font-family="Arial, sans-serif" font-size="13"
+              font-style="italic" fill="#666">
+            Production Launch
+        </text>
+        
+
+        <!-- Timeline -->
+        <rect x="220" y="410" width="5950" height="30" fill="white" stroke="#eee"/>
+
+        <!-- Task bar or milestone -->
+        
+        <rect x="6170" y="425" width="10" height="10"
+              fill="#e74c3c" transform="rotate(45 6175 430)"/>
+        
+    </g>
+    
+
+    <!-- Legend -->
+    <g class="legend" transform="translate(20, 470)">
+        <rect width="6270" height="60" fill="#f8f9fa" rx="4"/>
+
+        <rect x="10" y="15" width="20" height="12" fill="#4a90e2" rx="2"/>
+        <text x="35" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H2 Tasks</text>
+
+        <rect x="120" y="15" width="20" height="12" fill="#7eb0e8" rx="2"/>
+        <text x="145" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H3 Tasks</text>
+
+        <rect x="230" y="15" width="12" height="12" fill="#e74c3c" transform="rotate(45 236 21)"/>
+        <text x="255" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">Milestones</text>
+    </g>
+</svg>

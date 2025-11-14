@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"gantt-gen/parser"
 	"gantt-gen/renderer"
@@ -13,7 +11,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintf(os.Stderr, "Usage: %s <input.md> <output.html|output.svg>\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s <input.md> <output.svg>\n", os.Args[0])
 		os.Exit(1)
 	}
 
@@ -40,22 +38,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Generate output based on file extension
-	var output string
-	ext := strings.ToLower(filepath.Ext(outputPath))
-
-	switch ext {
-	case ".html":
-		output, err = renderer.RenderHTML(project)
-	case ".svg":
-		output, err = renderer.RenderSVG(project)
-	default:
-		fmt.Fprintf(os.Stderr, "Unsupported output format: %s (use .html or .svg)\n", ext)
-		os.Exit(1)
-	}
-
+	// Generate SVG output
+	output, err := renderer.RenderSVG(project)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error rendering output: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error rendering SVG: %v\n", err)
 		os.Exit(1)
 	}
 
