@@ -29,12 +29,18 @@ const htmlTemplate = `<!DOCTYPE html>
         }
 
         .container {
-            max-width: 1400px;
+            min-width: {{.MinWidth}}px;
+            width: fit-content;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 20px;
+        }
+
+        .gantt-wrapper {
+            overflow-x: auto;
         }
 
         h1 {
@@ -166,26 +172,28 @@ const htmlTemplate = `<!DOCTYPE html>
     <div class="container">
         <h1>{{.Name}}</h1>
 
-        <div class="gantt">
-            <div class="gantt-header">
-                <div class="gantt-header-task">Task</div>
-                <div class="gantt-header-timeline">Timeline</div>
-            </div>
-
-            {{range .Tasks}}
-            <div class="task-row">
-                <div class="task-name {{if .IsMilestone}}milestone{{else}}level-{{.Level}}{{end}}">
-                    {{.Name}}
-                    {{if .Link}}<a href="{{.Link}}" target="_blank">🔗</a>{{end}}
+        <div class="gantt-wrapper">
+            <div class="gantt">
+                <div class="gantt-header">
+                    <div class="gantt-header-task">Task</div>
+                    <div class="gantt-header-timeline">Timeline</div>
                 </div>
-                <div class="task-timeline">
-                    <div class="task-bar {{if .IsMilestone}}milestone{{else}}level-{{.Level}}{{end}}"
-                         style="left: {{.BarLeft}}%; width: {{.BarWidth}}%;">
-                        {{if not .IsMilestone}}{{.DateRange}}{{end}}
+
+                {{range .Tasks}}
+                <div class="task-row">
+                    <div class="task-name {{if .IsMilestone}}milestone{{else}}level-{{.Level}}{{end}}">
+                        {{.Name}}
+                        {{if .Link}}<a href="{{.Link}}" target="_blank">🔗</a>{{end}}
+                    </div>
+                    <div class="task-timeline">
+                        <div class="task-bar {{if .IsMilestone}}milestone{{else}}level-{{.Level}}{{end}}"
+                             style="left: {{.BarLeft}}%; width: {{.BarWidth}}%;">
+                            {{if not .IsMilestone}}{{.DateRange}}{{end}}
+                        </div>
                     </div>
                 </div>
+                {{end}}
             </div>
-            {{end}}
         </div>
 
         <div class="legend">
@@ -215,8 +223,9 @@ type htmlTask struct {
 }
 
 type htmlData struct {
-	Name  string
-	Tasks []htmlTask
+	Name          string
+	Tasks         []htmlTask
+	MinWidth      int
 }
 
 // RenderHTML generates an HTML Gantt chart
@@ -241,6 +250,17 @@ func RenderHTML(project *model.Project) (string, error) {
 	}
 
 	totalDays := maxDate.Sub(minDate).Hours() / 24
+
+	// Calculate dynamic width: ~25px per day, minimum 1200px
+	// This ensures readability for both short and long projects
+	taskColumnWidth := 220
+	timelineMinWidth := 1000
+	pixelsPerDay := 25.0
+	calculatedTimelineWidth := int(totalDays * pixelsPerDay)
+	if calculatedTimelineWidth < timelineMinWidth {
+		calculatedTimelineWidth = timelineMinWidth
+	}
+	minWidth := taskColumnWidth + calculatedTimelineWidth
 
 	// Build HTML tasks
 	var htmlTasks []htmlTask
@@ -267,8 +287,9 @@ func RenderHTML(project *model.Project) (string, error) {
 	}
 
 	data := htmlData{
-		Name:  project.Name,
-		Tasks: htmlTasks,
+		Name:     project.Name,
+		Tasks:    htmlTasks,
+		MinWidth: minWidth,
 	}
 
 	tmpl, err := template.New("gantt").Parse(htmlTemplate)

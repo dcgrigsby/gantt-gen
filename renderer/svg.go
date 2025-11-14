@@ -125,7 +125,14 @@ func RenderSVG(project *model.Project) (string, error) {
 	}
 
 	totalDays := maxDate.Sub(minDate).Hours() / 24
-	timelineWidth := 800
+
+	// Calculate dynamic width: ~25px per day, minimum 800px
+	pixelsPerDay := 25.0
+	timelineWidth := int(totalDays * pixelsPerDay)
+	if timelineWidth < 800 {
+		timelineWidth = 800
+	}
+
 	rowHeight := 30
 	headerHeight := 80
 
@@ -186,10 +193,11 @@ func RenderSVG(project *model.Project) (string, error) {
 	}
 
 	totalHeight := headerHeight + (len(project.Tasks) * rowHeight) + 100
+	totalWidth := 220 + timelineWidth + 100 // task column + timeline + padding
 
 	data := svgData{
 		Name:          project.Name,
-		Width:         1100,
+		Width:         totalWidth,
 		Height:        totalHeight,
 		TimelineWidth: timelineWidth,
 		Tasks:         svgTasks,
