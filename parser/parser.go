@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/araddon/dateparse"
 	"github.com/yuin/goldmark"
@@ -54,6 +55,15 @@ func Parse(source []byte) (*model.Project, error) {
 
 			if node.Level == 1 {
 				ctx.project.Name = text
+			} else if strings.HasPrefix(text, "Calendar:") {
+				// Extract calendar name
+				calName := strings.TrimSpace(strings.TrimPrefix(text, "Calendar:"))
+				cal := model.Calendar{
+					Name: calName,
+				}
+				ctx.project.Calendars = append(ctx.project.Calendars, cal)
+				ctx.currentCalendar = &ctx.project.Calendars[len(ctx.project.Calendars)-1]
+				ctx.currentTask = nil // Not a task
 			} else {
 				task := model.Task{
 					Name:  text,
@@ -61,6 +71,7 @@ func Parse(source []byte) (*model.Project, error) {
 				}
 				ctx.project.Tasks = append(ctx.project.Tasks, task)
 				ctx.currentTask = &ctx.project.Tasks[len(ctx.project.Tasks)-1]
+				ctx.currentCalendar = nil // Not a calendar
 			}
 
 		case *ast.Paragraph:
@@ -184,7 +195,56 @@ func parseDependencyTable(rows [][]string, ctx *parseContext) {
 }
 
 func parseCalendarTable(rows [][]string, ctx *parseContext) {
-	// Placeholder - will implement in next task
+	if ctx.currentCalendar == nil {
+		return
+	}
+
+	for _, row := range rows {
+		if len(row) < 2 {
+			continue
+		}
+
+		key := row[0]
+		value := row[1]
+
+		switch key {
+		case "Default":
+			ctx.currentCalendar.IsDefault = strings.ToLower(value) == "true"
+		case "Weekends":
+			ctx.currentCalendar.Weekends = parseWeekends(value)
+		case "Holiday":
+			if t, err := dateparse.ParseAny(value); err == nil {
+				ctx.currentCalendar.Holidays = append(ctx.currentCalendar.Holidays, t)
+			}
+		}
+	}
+}
+
+func parseWeekends(s string) []time.Weekday {
+	parts := strings.Split(s, ",")
+	var weekends []time.Weekday
+
+	dayMap := map[string]time.Weekday{
+		"sun": time.Sunday,
+		"mon": time.Monday,
+		"tue": time.Tuesday,
+		"wed": time.Wednesday,
+		"thu": time.Thursday,
+		"fri": time.Friday,
+		"sat": time.Saturday,
+	}
+
+	for _, part := range parts {
+		day := strings.ToLower(strings.TrimSpace(part))
+		if len(day) > 3 {
+			day = day[:3]
+		}
+		if wd, ok := dayMap[day]; ok {
+			weekends = append(weekends, wd)
+		}
+	}
+
+	return weekends
 }
 
 func parseDuration(s string) int {

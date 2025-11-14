@@ -141,3 +141,44 @@ func TestParse_DependencyTable(t *testing.T) {
 		t.Errorf("dep.Type = %q, want %q", dep.Type, "finish-to-start")
 	}
 }
+
+func TestParse_CalendarTable(t *testing.T) {
+	input := `# Project
+
+## Calendar: US-2024
+
+| Type | Value |
+|------|-------|
+| Default | true |
+| Weekends | Sat, Sun |
+| Holiday | 2024-01-01 |
+| Holiday | 2024-07-04 |
+`
+
+	project, err := Parse([]byte(input))
+	if err != nil {
+		t.Fatalf("Parse() error = %v", err)
+	}
+
+	if len(project.Calendars) != 1 {
+		t.Fatalf("len(calendars) = %d, want 1", len(project.Calendars))
+	}
+
+	cal := project.Calendars[0]
+
+	if cal.Name != "US-2024" {
+		t.Errorf("calendar.Name = %q, want %q", cal.Name, "US-2024")
+	}
+
+	if !cal.IsDefault {
+		t.Error("calendar should be default")
+	}
+
+	if len(cal.Weekends) != 2 {
+		t.Errorf("len(weekends) = %d, want 2", len(cal.Weekends))
+	}
+
+	if len(cal.Holidays) != 2 {
+		t.Errorf("len(holidays) = %d, want 2", len(cal.Holidays))
+	}
+}
