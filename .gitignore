@@ -1,0 +1,20 @@
+# Binaries
+gantt-gen
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test outputs
+examples/test-output.*
+
+# Go test cache
+*.test
+*.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
