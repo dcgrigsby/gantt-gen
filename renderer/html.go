@@ -41,6 +41,7 @@ const htmlTemplate = `<!DOCTYPE html>
 
         .gantt-wrapper {
             overflow-x: auto;
+            overflow-y: visible;
         }
 
         h1 {
@@ -53,6 +54,7 @@ const htmlTemplate = `<!DOCTYPE html>
             grid-template-columns: 200px 1fr;
             gap: 0;
             border: 1px solid #ddd;
+            overflow: visible;
         }
 
         .gantt-header {
@@ -75,6 +77,7 @@ const htmlTemplate = `<!DOCTYPE html>
             padding: 10px;
             border-bottom: 1px solid #eee;
             background: white;
+            min-height: 40px;
         }
 
         .task-name.level-2 {
@@ -93,6 +96,7 @@ const htmlTemplate = `<!DOCTYPE html>
         .task-name.milestone {
             font-style: italic;
             color: #666;
+            padding: 15px 10px;
         }
 
         .task-name a {
@@ -108,6 +112,7 @@ const htmlTemplate = `<!DOCTYPE html>
             position: relative;
             background: white;
             overflow: visible;
+            min-height: 40px;
         }
 
         .task-bar {
