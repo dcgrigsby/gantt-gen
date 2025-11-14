@@ -38,9 +38,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="220" y="85" width="350" height="20"
+        <rect x="222.07" y="85" width="346.64474576271186" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="225" y="98"
+        <text x="227.07" y="98"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 2 - Jan 16
         </text>
@@ -64,9 +64,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="570" y="115" width="525" height="20"
+        <rect x="568.7147457627119" y="115" width="519.9671186440678" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="575" y="128"
+        <text x="573.7147457627119" y="128"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Feb 6
         </text>
@@ -90,9 +90,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="570" y="145" width="350" height="20"
+        <rect x="568.7147457627119" y="145" width="346.64474576271186" height="20"
               fill="#7eb0e8" rx="3"/>
-        <text x="575" y="158"
+        <text x="573.7147457627119" y="158"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Jan 30
         </text>
@@ -116,9 +116,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="570" y="175" width="400" height="20"
+        <rect x="568.7147457627119" y="175" width="396.16542372881355" height="20"
               fill="#7eb0e8" rx="3"/>
-        <text x="575" y="188"
+        <text x="573.7147457627119" y="188"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Jan 16 - Feb 1
         </text>
@@ -142,9 +142,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="970" y="205" width="175" height="20"
+        <rect x="964.8801694915254" y="205" width="173.32237288135593" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="975" y="218"
+        <text x="969.8801694915254" y="218"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Feb 1 - Feb 8
         </text>
@@ -168,8 +168,8 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="1145" y="245" width="10" height="10"
-              fill="#e74c3c" transform="rotate(45 1150 250)"/>
+        <rect x="1138.2025423728812" y="245" width="10" height="10"
+              fill="#e74c3c" transform="rotate(45 1143.2025423728812 250)"/>
         
     </g>
     
@@ -190,9 +190,9 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="1145" y="265" width="100" height="20"
+        <rect x="1138.2025423728812" y="265" width="99.04135593220339" height="20"
               fill="#4a90e2" rx="3"/>
-        <text x="1150" y="278"
+        <text x="1143.2025423728812" y="278"
               font-family="Arial, sans-serif" font-size="10" fill="white">
             Feb 8 - Feb 12
         </text>
@@ -216,8 +216,8 @@
 
         <!-- Task bar or milestone -->
         
-        <rect x="1695" y="305" width="10" height="10"
-              fill="#e74c3c" transform="rotate(45 1700 310)"/>
+        <rect x="1682.9299999999998" y="305" width="10" height="10"
+              fill="#e74c3c" transform="rotate(45 1687.9299999999998 310)"/>
         
     </g>
     

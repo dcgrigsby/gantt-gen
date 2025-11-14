@@ -135,6 +135,13 @@ func RenderSVG(project *model.Project) (string, error) {
 		timelineWidth = 800
 	}
 
+	// Reserve space for milestone diamonds at the edges
+	// A rotated 10x10 square has diagonal = 10*sqrt(2) ≈ 14.14px
+	// Radius from center to corner = 14.14/2 ≈ 7.07px
+	const milestoneRadius = 7.07
+	milestonePadding := milestoneRadius * 2 // Total padding needed
+	effectiveTimelineWidth := float64(timelineWidth) - milestonePadding
+
 	rowHeight := 30
 	headerHeight := 80
 
@@ -172,14 +179,18 @@ func RenderSVG(project *model.Project) (string, error) {
 			startOffset := task.CalculatedStart.Sub(minDate).Hours() / 24
 			endOffset := task.CalculatedEnd.Sub(minDate).Hours() / 24
 
-			barLeft := (startOffset / totalDays) * float64(timelineWidth)
-			barWidth := ((endOffset - startOffset) / totalDays) * float64(timelineWidth)
+			// Use effective width for positioning to reserve space for milestones
+			barLeft := (startOffset / totalDays) * effectiveTimelineWidth
+			barWidth := ((endOffset - startOffset) / totalDays) * effectiveTimelineWidth
 
 			if barWidth < 5 {
 				barWidth = 5 // Minimum width for visibility
 			}
 
-			st.BarX = 220 + barLeft
+			// Add left padding to keep diamonds within timeline bounds
+			// Diamond extends (milestoneRadius - 5) pixels left of BarX
+			leftPadding := milestoneRadius - 5.0 // 7.07 - 5 = 2.07
+			st.BarX = 220 + barLeft + leftPadding
 			st.BarY = y + 5
 			st.BarWidth = barWidth
 			st.MilestoneY = y + 15
