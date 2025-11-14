@@ -107,6 +107,7 @@ const htmlTemplate = `<!DOCTYPE html>
             border-bottom: 1px solid #eee;
             position: relative;
             background: white;
+            overflow: visible;
         }
 
         .task-bar {

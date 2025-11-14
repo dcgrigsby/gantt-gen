@@ -50,7 +50,7 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         <!-- Task bar or milestone -->
         {{if $task.IsMilestone}}
         <rect x="{{$task.BarX}}" y="{{$task.MilestoneY}}" width="10" height="10"
-              fill="#e74c3c" transform="rotate(45 {{$task.BarX}} {{$task.MilestoneY}})"/>
+              fill="#e74c3c" transform="rotate(45 {{$task.MilestoneCenterX}} {{$task.MilestoneCenterY}})"/>
         {{else}}
         <rect x="{{$task.BarX}}" y="{{$task.BarY}}" width="{{$task.BarWidth}}" height="20"
               fill="{{$task.Color}}" rx="3"/>
@@ -80,18 +80,20 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 
 type svgTask struct {
 	model.Task
-	Y           int
-	NameX       int
-	TextY       int
-	LinkX       int
-	BarX        float64
-	BarY        int
-	BarWidth    float64
-	MilestoneY  int
-	DateX       float64
-	DateY       int
-	DateRange   string
-	Color       string
+	Y                int
+	NameX            int
+	TextY            int
+	LinkX            int
+	BarX             float64
+	BarY             int
+	BarWidth         float64
+	MilestoneY       int
+	MilestoneCenterX float64
+	MilestoneCenterY int
+	DateX            float64
+	DateY            int
+	DateRange        string
+	Color            string
 }
 
 type svgData struct {
@@ -181,6 +183,8 @@ func RenderSVG(project *model.Project) (string, error) {
 			st.BarY = y + 5
 			st.BarWidth = barWidth
 			st.MilestoneY = y + 15
+			st.MilestoneCenterX = st.BarX + 5  // Center X of 10px square
+			st.MilestoneCenterY = st.MilestoneY + 5  // Center Y of 10px square
 			st.DateX = st.BarX + 5
 			st.DateY = y + 18
 
