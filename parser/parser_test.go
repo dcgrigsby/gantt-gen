@@ -68,3 +68,76 @@ func TestParse_Milestones(t *testing.T) {
 		t.Errorf("milestone.Name = %q, want %q", project.Tasks[1].Name, "Launch Milestone")
 	}
 }
+
+func TestParse_PropertyTable(t *testing.T) {
+	input := `# Project
+
+## Design Phase
+
+| Property | Value |
+|----------|-------|
+| Start | 2024-01-01 |
+| Duration | 5d |
+| Link | https://jira.com/PROJ-123 |
+`
+
+	project, err := Parse([]byte(input))
+	if err != nil {
+		t.Fatalf("Parse() error = %v", err)
+	}
+
+	if len(project.Tasks) != 1 {
+		t.Fatalf("len(tasks) = %d, want 1", len(project.Tasks))
+	}
+
+	task := project.Tasks[0]
+
+	if task.Start == nil {
+		t.Error("task.Start should not be nil")
+	}
+
+	if task.Duration != 5 {
+		t.Errorf("task.Duration = %d, want 5", task.Duration)
+	}
+
+	if task.Link != "https://jira.com/PROJ-123" {
+		t.Errorf("task.Link = %q, want %q", task.Link, "https://jira.com/PROJ-123")
+	}
+}
+
+func TestParse_DependencyTable(t *testing.T) {
+	input := `# Project
+
+## Task A
+
+## Task B
+
+| Depends On | Type |
+|------------|------|
+| Task A | finish-to-start |
+`
+
+	project, err := Parse([]byte(input))
+	if err != nil {
+		t.Fatalf("Parse() error = %v", err)
+	}
+
+	if len(project.Tasks) != 2 {
+		t.Fatalf("len(tasks) = %d, want 2", len(project.Tasks))
+	}
+
+	task := project.Tasks[1]
+
+	if len(task.Dependencies) != 1 {
+		t.Fatalf("len(dependencies) = %d, want 1", len(task.Dependencies))
+	}
+
+	dep := task.Dependencies[0]
+	if dep.TaskName != "Task A" {
+		t.Errorf("dep.TaskName = %q, want %q", dep.TaskName, "Task A")
+	}
+
+	if dep.Type != "finish-to-start" {
+		t.Errorf("dep.Type = %q, want %q", dep.Type, "finish-to-start")
+	}
+}
