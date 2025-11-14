@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -180,5 +182,34 @@ func TestParse_CalendarTable(t *testing.T) {
 
 	if len(cal.Holidays) != 2 {
 		t.Errorf("len(holidays) = %d, want 2", len(cal.Holidays))
+	}
+}
+
+func TestParse_ManyTasks_NoPointerBug(t *testing.T) {
+	// Create enough tasks to force slice reallocation (>32 triggers new backing array)
+	var input strings.Builder
+	input.WriteString("# Project\n\n")
+
+	for i := 1; i <= 50; i++ {
+		input.WriteString(fmt.Sprintf("## Task %d\n\n", i))
+		input.WriteString("| Property | Value |\n")
+		input.WriteString("|----------|-------|\n")
+		input.WriteString("| Duration | 5d |\n\n")
+	}
+
+	project, err := Parse([]byte(input.String()))
+	if err != nil {
+		t.Fatalf("Parse() error = %v", err)
+	}
+
+	if len(project.Tasks) != 50 {
+		t.Fatalf("len(tasks) = %d, want 50", len(project.Tasks))
+	}
+
+	// Check that all tasks have Duration set (bug would cause some to have 0)
+	for i, task := range project.Tasks {
+		if task.Duration != 5 {
+			t.Errorf("task[%d].Duration = %d, want 5", i, task.Duration)
+		}
 	}
 }

@@ -26,10 +26,10 @@ type tableContext struct {
 
 // Add field to track context during parsing
 type parseContext struct {
-	project         *model.Project
-	currentTask     *model.Task
-	currentCalendar *model.Calendar
-	tableCtx        *tableContext
+	project              *model.Project
+	currentTaskIndex     int // Changed from *model.Task
+	currentCalendarIndex int // Changed from *model.Calendar
+	tableCtx             *tableContext
 }
 
 // Parse parses markdown and returns a Project
@@ -40,7 +40,9 @@ func Parse(source []byte) (*model.Project, error) {
 	doc := md.Parser().Parse(text.NewReader(source))
 
 	ctx := &parseContext{
-		project: &model.Project{},
+		project:              &model.Project{},
+		currentTaskIndex:     -1,
+		currentCalendarIndex: -1,
 	}
 
 	// Walk the AST
@@ -55,6 +57,8 @@ func Parse(source []byte) (*model.Project, error) {
 
 			if node.Level == 1 {
 				ctx.project.Name = text
+				ctx.currentTaskIndex = -1
+				ctx.currentCalendarIndex = -1
 			} else if strings.HasPrefix(text, "Calendar:") {
 				// Extract calendar name
 				calName := strings.TrimSpace(strings.TrimPrefix(text, "Calendar:"))
@@ -62,16 +66,16 @@ func Parse(source []byte) (*model.Project, error) {
 					Name: calName,
 				}
 				ctx.project.Calendars = append(ctx.project.Calendars, cal)
-				ctx.currentCalendar = &ctx.project.Calendars[len(ctx.project.Calendars)-1]
-				ctx.currentTask = nil // Not a task
+				ctx.currentCalendarIndex = len(ctx.project.Calendars) - 1
+				ctx.currentTaskIndex = -1
 			} else {
 				task := model.Task{
 					Name:  text,
 					Level: node.Level,
 				}
 				ctx.project.Tasks = append(ctx.project.Tasks, task)
-				ctx.currentTask = &ctx.project.Tasks[len(ctx.project.Tasks)-1]
-				ctx.currentCalendar = nil // Not a calendar
+				ctx.currentTaskIndex = len(ctx.project.Tasks) - 1
+				ctx.currentCalendarIndex = -1
 			}
 
 		case *ast.Paragraph:
@@ -85,7 +89,8 @@ func Parse(source []byte) (*model.Project, error) {
 						Level:       0,
 					}
 					ctx.project.Tasks = append(ctx.project.Tasks, task)
-					ctx.currentTask = &ctx.project.Tasks[len(ctx.project.Tasks)-1]
+					ctx.currentTaskIndex = len(ctx.project.Tasks) - 1
+					ctx.currentCalendarIndex = -1
 				}
 			}
 
@@ -97,6 +102,20 @@ func Parse(source []byte) (*model.Project, error) {
 	})
 
 	return ctx.project, nil
+}
+
+func (ctx *parseContext) currentTask() *model.Task {
+	if ctx.currentTaskIndex >= 0 && ctx.currentTaskIndex < len(ctx.project.Tasks) {
+		return &ctx.project.Tasks[ctx.currentTaskIndex]
+	}
+	return nil
+}
+
+func (ctx *parseContext) currentCalendar() *model.Calendar {
+	if ctx.currentCalendarIndex >= 0 && ctx.currentCalendarIndex < len(ctx.project.Calendars) {
+		return &ctx.project.Calendars[ctx.currentCalendarIndex]
+	}
+	return nil
 }
 
 func handleTable(table *gast.Table, source []byte, ctx *parseContext) {
@@ -136,7 +155,8 @@ func handleTable(table *gast.Table, source []byte, ctx *parseContext) {
 }
 
 func parsePropertyTable(rows [][]string, ctx *parseContext) {
-	if ctx.currentTask == nil {
+	task := ctx.currentTask()
+	if task == nil {
 		return
 	}
 
@@ -151,28 +171,29 @@ func parsePropertyTable(rows [][]string, ctx *parseContext) {
 		switch key {
 		case "Start":
 			if t, err := dateparse.ParseAny(value); err == nil {
-				ctx.currentTask.Start = &t
+				task.Start = &t
 			}
 		case "End":
 			if t, err := dateparse.ParseAny(value); err == nil {
-				ctx.currentTask.End = &t
+				task.End = &t
 			}
 		case "Date":
 			if t, err := dateparse.ParseAny(value); err == nil {
-				ctx.currentTask.Date = &t
+				task.Date = &t
 			}
 		case "Duration":
-			ctx.currentTask.Duration = parseDuration(value)
+			task.Duration = parseDuration(value)
 		case "Link":
-			ctx.currentTask.Link = value
+			task.Link = value
 		case "Calendar":
-			ctx.currentTask.CalendarName = value
+			task.CalendarName = value
 		}
 	}
 }
 
 func parseDependencyTable(rows [][]string, ctx *parseContext) {
-	if ctx.currentTask == nil {
+	task := ctx.currentTask()
+	if task == nil {
 		return
 	}
 
@@ -190,12 +211,13 @@ func parseDependencyTable(rows [][]string, ctx *parseContext) {
 			TaskName: row[0],
 			Type:     depType,
 		}
-		ctx.currentTask.Dependencies = append(ctx.currentTask.Dependencies, dep)
+		task.Dependencies = append(task.Dependencies, dep)
 	}
 }
 
 func parseCalendarTable(rows [][]string, ctx *parseContext) {
-	if ctx.currentCalendar == nil {
+	cal := ctx.currentCalendar()
+	if cal == nil {
 		return
 	}
 
@@ -209,12 +231,12 @@ func parseCalendarTable(rows [][]string, ctx *parseContext) {
 
 		switch key {
 		case "Default":
-			ctx.currentCalendar.IsDefault = strings.ToLower(value) == "true"
+			cal.IsDefault = strings.ToLower(value) == "true"
 		case "Weekends":
-			ctx.currentCalendar.Weekends = parseWeekends(value)
+			cal.Weekends = parseWeekends(value)
 		case "Holiday":
 			if t, err := dateparse.ParseAny(value); err == nil {
-				ctx.currentCalendar.Holidays = append(ctx.currentCalendar.Holidays, t)
+				cal.Holidays = append(cal.Holidays, t)
 			}
 		}
 	}
