@@ -42,3 +42,36 @@ func TestRenderSVG(t *testing.T) {
 		t.Error("SVG should contain rectangles for tasks")
 	}
 }
+
+func TestRenderSVG_LongTaskName(t *testing.T) {
+	start := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
+	end := time.Date(2024, 1, 5, 0, 0, 0, 0, time.UTC)
+
+	longName := "This is an extremely long task name that should be truncated to fit within the 200 pixel column width without overflowing"
+
+	project := &model.Project{
+		Name: "Test Project",
+		Tasks: []model.Task{
+			{
+				Name:            longName,
+				Level:           2,
+				CalculatedStart: &start,
+				CalculatedEnd:   &end,
+			},
+		},
+	}
+
+	svg, err := RenderSVG(project)
+	if err != nil {
+		t.Fatalf("RenderSVG() error = %v", err)
+	}
+
+	if !strings.Contains(svg, "<svg") {
+		t.Error("Output should contain SVG tag")
+	}
+
+	// Task name should appear (possibly truncated)
+	if !strings.Contains(svg, "This is an extremely") {
+		t.Error("SVG should contain start of task name")
+	}
+}

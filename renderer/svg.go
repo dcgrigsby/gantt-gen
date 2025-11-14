@@ -38,7 +38,7 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         <text x="{{$task.NameX}}" y="{{$task.TextY}}"
               font-family="Arial, sans-serif" font-size="13"
               {{if $task.IsMilestone}}font-style="italic" fill="#666"{{else}}fill="#333"{{end}}>
-            {{$task.Name}}
+            {{$task.DisplayName}}
         </text>
         {{if $task.Link}}
         <text x="{{$task.LinkX}}" y="{{$task.TextY}}" font-size="11" fill="#0066cc">🔗</text>
@@ -78,8 +78,41 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 </svg>
 `
 
+const (
+	maxTaskNameWidth   = 170 // Reserve 30px for indentation/padding
+	avgCharWidthPixels = 7.0 // Average character width in Arial 13px
+	ellipsis           = "..."
+)
+
+// truncateTaskName truncates task name to fit within maxWidth pixels
+func truncateTaskName(name string, level int) string {
+	// Calculate indent space used
+	indent := 0
+	if level >= 2 {
+		indent = (level - 2) * 20
+	}
+
+	availableWidth := maxTaskNameWidth - indent
+	maxChars := int(float64(availableWidth) / avgCharWidthPixels)
+
+	// Account for multi-byte UTF-8 characters (rough estimate)
+	runeCount := len([]rune(name))
+	if runeCount <= maxChars {
+		return name
+	}
+
+	// Truncate and add ellipsis
+	runes := []rune(name)
+	if maxChars > len(ellipsis) {
+		return string(runes[:maxChars-len(ellipsis)]) + ellipsis
+	}
+
+	return ellipsis
+}
+
 type svgTask struct {
 	model.Task
+	DisplayName      string  // Truncated name for display
 	Y                int
 	NameX            int
 	TextY            int
@@ -150,18 +183,25 @@ func RenderSVG(project *model.Project) (string, error) {
 	for i, task := range project.Tasks {
 		y := headerHeight + (i * rowHeight)
 
+		// Truncate name for display
+		displayName := truncateTaskName(task.Name, task.Level)
+
 		st := svgTask{
-			Task:  task,
-			Y:     y,
-			NameX: 30 + (task.Level-2)*20,
-			TextY: y + 20,
+			Task:        task,
+			DisplayName: displayName,
+			Y:           y,
+			NameX:       30 + (task.Level-2)*20,
+			TextY:       y + 20,
 		}
 
 		if task.IsMilestone {
 			st.NameX = 30
+			displayName = truncateTaskName(task.Name, 0)
+			st.DisplayName = displayName
 		}
 
-		st.LinkX = st.NameX + len(task.Name)*7 + 5
+		// Use DisplayName length for link positioning
+		st.LinkX = st.NameX + len(displayName)*7 + 5
 
 		// Color by level
 		switch task.Level {
