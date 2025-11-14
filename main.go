@@ -32,6 +32,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Validate project structure
+	if err := project.Validate(); err != nil {
+		fmt.Fprintf(os.Stderr, "Validation error: %v\n", err)
+		os.Exit(1)
+	}
+
 	// Resolve dependencies and calculate dates
 	if err := resolver.Resolve(project); err != nil {
 		fmt.Fprintf(os.Stderr, "Error resolving dependencies: %v\n", err)

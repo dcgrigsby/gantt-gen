@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // DependencyType specifies how tasks relate
 type DependencyType string
@@ -54,4 +57,61 @@ type Project struct {
 	Name      string
 	Tasks     []Task
 	Calendars []Calendar
+}
+
+const (
+	MaxTaskNameLength = 200
+	MaxTasks          = 1000
+)
+
+// Validate checks the project for common errors and invariants
+func (p *Project) Validate() error {
+	if len(p.Tasks) > MaxTasks {
+		return fmt.Errorf("too many tasks: %d (max %d)", len(p.Tasks), MaxTasks)
+	}
+
+	// Build task name set for uniqueness and dependency checking
+	taskNames := make(map[string]bool)
+	for _, task := range p.Tasks {
+		if task.Name == "" {
+			return fmt.Errorf("task has empty name")
+		}
+
+		if len(task.Name) > MaxTaskNameLength {
+			return fmt.Errorf("task name exceeds %d characters: %q", MaxTaskNameLength, truncate(task.Name, 50))
+		}
+
+		if taskNames[task.Name] {
+			return fmt.Errorf("duplicate task name: %s", task.Name)
+		}
+		taskNames[task.Name] = true
+	}
+
+	// Build calendar name set
+	calNames := make(map[string]bool)
+	for _, cal := range p.Calendars {
+		calNames[cal.Name] = true
+	}
+
+	// Validate dependencies and calendar references
+	for _, task := range p.Tasks {
+		for _, dep := range task.Dependencies {
+			if !taskNames[dep.TaskName] {
+				return fmt.Errorf("task %q depends on non-existent task: %s", task.Name, dep.TaskName)
+			}
+		}
+
+		if task.CalendarName != "" && !calNames[task.CalendarName] {
+			return fmt.Errorf("task %q references unknown calendar: %s", task.Name, task.CalendarName)
+		}
+	}
+
+	return nil
+}
+
+func truncate(s string, maxLen int) string {
+	if len(s) <= maxLen {
+		return s
+	}
+	return s[:maxLen] + "..."
 }
