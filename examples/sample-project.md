@@ -20,7 +20,6 @@ During this phase, we'll finalize the UX mockups, create the technical architect
 |----------|-------|
 | Start | 2024-01-02 |
 | Duration | 10d |
-| Link | https://jira.example.com/PROJ-101 |
 
 ## Implementation
 
@@ -29,7 +28,6 @@ The implementation phase covers both backend and frontend development. Teams wil
 | Property | Value |
 |----------|-------|
 | Duration | 15d |
-| Link | https://jira.example.com/PROJ-102 |
 
 | Depends On | Type |
 |------------|------|
@@ -42,7 +40,6 @@ This includes API development, database schema implementation, and integration w
 | Property | Value |
 |----------|-------|
 | Duration | 10d |
-| Link | https://jira.example.com/PROJ-103 |
 
 | Depends On | Type |
 |------------|------|
@@ -55,7 +52,6 @@ The UI will be built using our standard component library with responsive design
 | Property | Value |
 |----------|-------|
 | Duration | 12d |
-| Link | https://jira.example.com/PROJ-104 |
 
 | Depends On | Type |
 |------------|------|
@@ -68,7 +64,6 @@ Comprehensive testing phase including integration tests, end-to-end user flows, 
 | Property | Value |
 |----------|-------|
 | Duration | 5d |
-| Link | https://jira.example.com/PROJ-105 |
 
 | Depends On | Type |
 |------------|------|
@@ -76,10 +71,6 @@ Comprehensive testing phase including integration tests, end-to-end user flows, 
 | Frontend Development | finish-to-start |
 
 **Code Complete Milestone**
-
-| Property | Value |
-|----------|-------|
-| Link | https://jira.example.com/PROJ-200 |
 
 | Depends On | Type |
 |------------|------|
@@ -92,7 +83,6 @@ Final deployment to production includes database migrations, infrastructure prov
 | Property | Value |
 |----------|-------|
 | Duration | 2d |
-| Link | https://jira.example.com/PROJ-106 |
 
 | Depends On | Type |
 |------------|------|
@@ -103,4 +93,3 @@ Final deployment to production includes database migrations, infrastructure prov
 | Property | Value |
 |----------|-------|
 | Date | 2024-03-01 |
-| Link | https://jira.example.com/PROJ-201 |
