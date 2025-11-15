@@ -3,6 +3,7 @@ package renderer
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 	"time"
 
@@ -20,12 +21,10 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     </text>
 
     <!-- Column headers -->
-    <rect x="20" y="50" width="200" height="30" fill="#f8f9fa" stroke="#ddd"/>
     <text x="30" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
         Task
     </text>
 
-    <rect x="220" y="50" width="{{.TimelineWidth}}" height="30" fill="#f8f9fa" stroke="#ddd"/>
     <text x="230" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
         Timeline
     </text>
@@ -34,25 +33,20 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     {{range $i, $task := .Tasks}}
     <g class="task-row">
         <!-- Task name -->
-        <rect x="20" y="{{$task.Y}}" width="200" height="30" fill="white" stroke="#eee"/>
         <text x="{{$task.NameX}}" y="{{$task.TextY}}"
               font-family="Arial, sans-serif" font-size="13"
               {{if $task.IsMilestone}}font-style="italic" fill="#666"{{else}}fill="#333"{{end}}>
             {{$task.DisplayName}}
         </text>
-        {{if $task.Link}}
-        <text x="{{$task.LinkX}}" y="{{$task.TextY}}" font-size="11" fill="#0066cc">🔗</text>
-        {{end}}
 
         <!-- Timeline -->
-        <rect x="220" y="{{$task.Y}}" width="{{$.TimelineWidth}}" height="30" fill="white" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         {{if $task.IsMilestone}}
         <rect x="{{$task.BarX}}" y="{{$task.MilestoneY}}" width="10" height="10"
               fill="#e74c3c" transform="rotate(45 {{$task.MilestoneCenterX}} {{$task.MilestoneCenterY}})"/>
         {{else}}
-        <rect x="{{$task.BarX}}" y="{{$task.BarY}}" width="{{$task.BarWidth}}" height="20"
+        <rect x="{{$task.BarX}}" y="{{$task.BarY}}" width="{{$task.BarWidth}}" height="28"
               fill="{{$task.Color}}" rx="3"/>
         <text x="{{$task.DateX}}" y="{{$task.DateY}}"
               font-family="Arial, sans-serif" font-size="10" fill="white">
@@ -61,20 +55,6 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         {{end}}
     </g>
     {{end}}
-
-    <!-- Legend -->
-    <g class="legend" transform="translate(20, {{.LegendY}})">
-        <rect width="{{.Width}}" height="60" fill="#f8f9fa" rx="4"/>
-
-        <rect x="10" y="15" width="20" height="12" fill="#4a90e2" rx="2"/>
-        <text x="35" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H2 Tasks</text>
-
-        <rect x="120" y="15" width="20" height="12" fill="#7eb0e8" rx="2"/>
-        <text x="145" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">H3 Tasks</text>
-
-        <rect x="230" y="15" width="12" height="12" fill="#e74c3c" transform="rotate(45 236 21)"/>
-        <text x="255" y="25" font-family="Arial, sans-serif" font-size="12" fill="#333">Milestones</text>
-    </g>
 </svg>
 `
 
@@ -104,7 +84,10 @@ func truncateTaskName(name string, level int) string {
 	// Truncate and add ellipsis
 	runes := []rune(name)
 	if maxChars > len(ellipsis) {
-		return string(runes[:maxChars-len(ellipsis)]) + ellipsis
+		truncated := string(runes[:maxChars-len(ellipsis)])
+		// Trim trailing spaces before adding ellipsis
+		truncated = strings.TrimRight(truncated, " ")
+		return truncated + ellipsis
 	}
 
 	return ellipsis
@@ -116,7 +99,6 @@ type svgTask struct {
 	Y                int
 	NameX            int
 	TextY            int
-	LinkX            int
 	BarX             float64
 	BarY             int
 	BarWidth         float64
@@ -135,7 +117,6 @@ type svgData struct {
 	Height        int
 	TimelineWidth int
 	Tasks         []svgTask
-	LegendY       int
 }
 
 // RenderSVG generates an SVG Gantt chart
@@ -175,7 +156,7 @@ func RenderSVG(project *model.Project) (string, error) {
 	milestonePadding := milestoneRadius * 2 // Total padding needed
 	effectiveTimelineWidth := float64(timelineWidth) - milestonePadding
 
-	rowHeight := 30
+	rowHeight := 40
 	headerHeight := 80
 
 	// Build SVG tasks
@@ -191,7 +172,7 @@ func RenderSVG(project *model.Project) (string, error) {
 			DisplayName: displayName,
 			Y:           y,
 			NameX:       30 + (task.Level-2)*20,
-			TextY:       y + 20,
+			TextY:       y + 25,
 		}
 
 		if task.IsMilestone {
@@ -199,9 +180,6 @@ func RenderSVG(project *model.Project) (string, error) {
 			displayName = truncateTaskName(task.Name, 0)
 			st.DisplayName = displayName
 		}
-
-		// Use DisplayName length for link positioning
-		st.LinkX = st.NameX + len(displayName)*7 + 5
 
 		// Color by level
 		switch task.Level {
@@ -231,13 +209,13 @@ func RenderSVG(project *model.Project) (string, error) {
 			// Diamond extends (milestoneRadius - 5) pixels left of BarX
 			leftPadding := milestoneRadius - 5.0 // 7.07 - 5 = 2.07
 			st.BarX = 220 + barLeft + leftPadding
-			st.BarY = y + 5
+			st.BarY = y + 6
 			st.BarWidth = barWidth
-			st.MilestoneY = y + 15
+			st.MilestoneY = y + 16
 			st.MilestoneCenterX = st.BarX + 5  // Center X of 10px square
 			st.MilestoneCenterY = st.MilestoneY + 5  // Center Y of 10px square
 			st.DateX = st.BarX + 5
-			st.DateY = y + 18
+			st.DateY = y + 24
 
 			st.DateRange = fmt.Sprintf("%s - %s",
 				task.CalculatedStart.Format("Jan 2"),
@@ -247,7 +225,7 @@ func RenderSVG(project *model.Project) (string, error) {
 		svgTasks = append(svgTasks, st)
 	}
 
-	totalHeight := headerHeight + (len(project.Tasks) * rowHeight) + 110
+	totalHeight := headerHeight + (len(project.Tasks) * rowHeight) + 20 // just add minimal bottom padding
 	totalWidth := 220 + timelineWidth + 20 // task column + timeline + minimal right padding
 
 	data := svgData{
@@ -256,7 +234,6 @@ func RenderSVG(project *model.Project) (string, error) {
 		Height:        totalHeight,
 		TimelineWidth: timelineWidth,
 		Tasks:         svgTasks,
-		LegendY:       totalHeight - 80,
 	}
 
 	tmpl, err := template.New("gantt").Parse(svgTemplate)
