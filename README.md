@@ -220,17 +220,30 @@ Omit duration and end date to create a milestone:
 Define custom calendars for business day calculations:
 
 ```markdown
-### Calendar: BusinessDays
+## Calendar: US-2024
 
-- Monday: 8h
-- Tuesday: 8h
-- Wednesday: 8h
-- Thursday: 8h
-- Friday: 8h
-- Saturday: 0h
-- Sunday: 0h
-- Holiday: 2024-01-01
-- Holiday: 2024-12-25
+| Type | Value |
+|------|-------|
+| Default | true |
+| Weekends | Sat, Sun |
+| Holiday | 2024-01-01 |
+| Holiday | 2024-07-04 |
+| Holiday | 2024-12-25 |
+```
+
+- **Default**: Set to `true` to make this the default calendar for all tasks
+- **Weekends**: Comma-separated list of weekend days (Sun, Mon, Tue, Wed, Thu, Fri, Sat)
+- **Holiday**: One row per holiday date (ISO 8601 format)
+
+Tasks can reference a specific calendar by name:
+
+```markdown
+## Task Name
+
+| Property | Value |
+|----------|-------|
+| Duration | 10d |
+| Calendar | US-2024 |
 ```
 
 ## Examples
