@@ -1,5 +1,7 @@
 # Software Development Project
 
+This project delivers a modern customer portal with enhanced self-service features. The timeline accounts for standard US holidays and working days, with all teams coordinating through our central project board.
+
 ## Calendar: US-2024
 
 | Type | Value |
@@ -12,6 +14,8 @@
 
 ## Design Phase
 
+During this phase, we'll finalize the UX mockups, create the technical architecture document, and establish our API contracts. The design team will work closely with product stakeholders to validate user flows before development begins.
+
 | Property | Value |
 |----------|-------|
 | Start | 2024-01-02 |
@@ -19,6 +23,8 @@
 | Link | https://jira.example.com/PROJ-101 |
 
 ## Implementation
+
+The implementation phase covers both backend and frontend development. Teams will work in parallel where possible to accelerate delivery while maintaining code quality standards.
 
 | Property | Value |
 |----------|-------|
@@ -31,6 +37,8 @@
 
 ### Backend Development
 
+This includes API development, database schema implementation, and integration with existing authentication services. All endpoints will follow our REST API guidelines and include comprehensive unit tests.
+
 | Property | Value |
 |----------|-------|
 | Duration | 10d |
@@ -42,6 +50,8 @@
 
 ### Frontend Development
 
+The UI will be built using our standard component library with responsive design for mobile and desktop. Focus on accessibility compliance and performance optimization, particularly for initial page load times.
+
 | Property | Value |
 |----------|-------|
 | Duration | 12d |
@@ -52,6 +62,8 @@
 | Implementation | start-to-start |
 
 ## Testing
+
+Comprehensive testing phase including integration tests, end-to-end user flows, cross-browser compatibility checks, and load testing. QA will validate against acceptance criteria defined during the design phase.
 
 | Property | Value |
 |----------|-------|
@@ -74,6 +86,8 @@
 | Testing | finish-to-start |
 
 ## Deployment
+
+Final deployment to production includes database migrations, infrastructure provisioning, monitoring setup, and rollback procedures. DevOps team will coordinate the release window with stakeholders.
 
 | Property | Value |
 |----------|-------|

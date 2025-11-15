@@ -7,7 +7,8 @@ A Go CLI tool that generates beautiful Gantt charts from markdown files.
 ## Features
 
 - 📝 Write project plans in readable markdown
-- 📅 Flexible date formats (ISO 8601)
+- 📄 Extracts Gantt charts from mixed content - add prose, notes, and documentation freely
+- 📅 Flexible date formats
 - 🔄 Dependency management (finish-to-start, start-to-start, finish-to-finish, start-to-finish)
 - 📆 Calendar support (weekends, holidays, business days)
 - 🎨 Multiple output formats: SVG, HTML, and Confluence
@@ -19,7 +20,7 @@ A Go CLI tool that generates beautiful Gantt charts from markdown files.
 
 ```bash
 # Install
-go install github.com/yourusername/gantt-gen@latest
+go install github.com/dcgrigsby/gantt-gen@latest
 
 # Generate a Gantt chart
 gantt-gen project.md output.svg
@@ -85,7 +86,7 @@ This generates the chart shown at the top of this README.
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/gantt-gen.git
+git clone https://github.com/dcgrigsby/gantt-gen.git
 cd gantt-gen
 go build
 ```
@@ -93,7 +94,7 @@ go build
 ### Using Go Install
 
 ```bash
-go install github.com/yourusername/gantt-gen@latest
+go install github.com/dcgrigsby/gantt-gen@latest
 ```
 
 ## Usage
@@ -168,9 +169,7 @@ Projects are defined using markdown with special table syntax:
 | Calendar | BusinessDays |
 ```
 
-**Dates**: ISO 8601 format (YYYY-MM-DD)
-
-**Duration**: Number followed by unit (d=days, w=weeks, m=months)
+**Duration**: Number followed by unit (d=days, w=weeks)
 
 **Calendar**: Optional calendar name for business day calculation
 
@@ -215,6 +214,17 @@ Omit duration and end date to create a milestone:
 | Start | 2024-03-01 |
 ```
 
+### Embedding in Documentation
+
+gantt-gen ignores prose and focuses only on the structured tables. This means you can:
+
+- Add introductory paragraphs and context to sections
+- Include implementation notes, risks, or assumptions
+- Document decisions and rationale alongside the plan
+- Maintain a single source of truth for both schedule and documentation
+
+The parser extracts only the headings and tables it needs, letting you freely mix planning data with narrative content.
+
 ### Calendars
 
 Define custom calendars for business day calculations:
@@ -233,7 +243,7 @@ Define custom calendars for business day calculations:
 
 - **Default**: Set to `true` to make this the default calendar for all tasks
 - **Weekends**: Comma-separated list of weekend days (Sun, Mon, Tue, Wed, Thu, Fri, Sat)
-- **Holiday**: One row per holiday date (ISO 8601 format)
+- **Holiday**: One row per holiday date
 
 Tasks can reference a specific calendar by name:
 
@@ -286,8 +296,7 @@ Common validation errors:
 ## Limitations
 
 - Maximum 1000 tasks per project
-- Maximum 200 characters per task name (longer names are truncated in output)
-- Dependency logic uses simplified constraints
+- Maximum 200 characters per task name
 
 ## Development
 
