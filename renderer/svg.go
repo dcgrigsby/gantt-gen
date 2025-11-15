@@ -21,18 +21,21 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     </text>
 
     <!-- Column headers -->
-    <text x="30" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
-        Task
-    </text>
+    <rect x="20" y="50" width="200" height="40" fill="none" stroke="#eee"/>
 
-    <text x="230" y="70" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#333">
-        Timeline
+    <!-- Timeline cells -->
+    {{range $cell := .TimelineCells}}
+    <rect x="{{$cell.X}}" y="50" width="{{$cell.Width}}" height="40" fill="none" stroke="#eee"/>
+    <text x="{{$cell.X}}" y="75" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#333" text-anchor="start" dx="5">
+        {{$cell.Label}}
     </text>
+    {{end}}
 
     <!-- Tasks -->
     {{range $i, $task := .Tasks}}
     <g class="task-row">
         <!-- Task name -->
+        <rect x="20" y="{{$task.Y}}" width="200" height="40" fill="none" stroke="#eee"/>
         <text x="{{$task.NameX}}" y="{{$task.TextY}}"
               font-family="Arial, sans-serif" font-size="13"
               {{if $task.IsMilestone}}font-style="italic" fill="#666"{{else}}fill="#333"{{end}}>
@@ -40,6 +43,7 @@ const svgTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         </text>
 
         <!-- Timeline -->
+        <rect x="220" y="{{$task.Y}}" width="{{$.TimelineWidth}}" height="40" fill="none" stroke="#eee"/>
 
         <!-- Task bar or milestone -->
         {{if $task.IsMilestone}}
@@ -111,12 +115,121 @@ type svgTask struct {
 	Color            string
 }
 
+type timelineCell struct {
+	X     float64
+	Width float64
+	Label string
+}
+
 type svgData struct {
 	Name          string
 	Width         int
 	Height        int
 	TimelineWidth int
 	Tasks         []svgTask
+	TimelineCells []timelineCell
+}
+
+// generateTimelineCells creates timeline header cells (months or weeks)
+func generateTimelineCells(minDate, maxDate time.Time, timelineWidth int, milestonePadding float64) []timelineCell {
+	totalDays := maxDate.Sub(minDate).Hours() / 24
+	fullWidth := float64(timelineWidth)
+
+	var cells []timelineCell
+
+	// Use months if > 60 days, otherwise use weeks
+	if totalDays > 60 {
+		// Generate month cells
+		current := time.Date(minDate.Year(), minDate.Month(), 1, 0, 0, 0, 0, minDate.Location())
+
+		for {
+			monthStart := current
+			monthEnd := monthStart.AddDate(0, 1, 0)
+
+			// Stop if this month starts after maxDate
+			if monthStart.After(maxDate) {
+				break
+			}
+
+			// Calculate visible portion of this month
+			visibleStart := monthStart
+			if visibleStart.Before(minDate) {
+				visibleStart = minDate
+			}
+			visibleEnd := monthEnd
+			if visibleEnd.After(maxDate) {
+				visibleEnd = maxDate
+			}
+
+			// Calculate position and width
+			startOffset := visibleStart.Sub(minDate).Hours() / 24
+			endOffset := visibleEnd.Sub(minDate).Hours() / 24
+
+			x := 220 + (startOffset/totalDays)*fullWidth
+			width := ((endOffset - startOffset) / totalDays) * fullWidth
+
+			cells = append(cells, timelineCell{
+				X:     x,
+				Width: width,
+				Label: monthStart.Format("Jan 2006"),
+			})
+
+			current = monthEnd
+		}
+	} else {
+		// Generate week cells
+		// Start from the beginning of the week containing minDate
+		current := minDate
+		weekday := int(current.Weekday())
+		if weekday == 0 {
+			weekday = 7 // Treat Sunday as 7
+		}
+		current = current.AddDate(0, 0, 1-weekday) // Go to Monday of that week
+
+		for {
+			weekStart := current
+			weekEnd := current.AddDate(0, 0, 7)
+
+			// Stop if this week starts after maxDate
+			if weekStart.After(maxDate) {
+				break
+			}
+
+			// Calculate visible portion of this week
+			visibleStart := weekStart
+			if visibleStart.Before(minDate) {
+				visibleStart = minDate
+			}
+			visibleEnd := weekEnd
+			if visibleEnd.After(maxDate) {
+				visibleEnd = maxDate
+			}
+
+			// Calculate position and width
+			startOffset := visibleStart.Sub(minDate).Hours() / 24
+			endOffset := visibleEnd.Sub(minDate).Hours() / 24
+
+			x := 220 + (startOffset/totalDays)*fullWidth
+			width := ((endOffset - startOffset) / totalDays) * fullWidth
+
+			// Format week as date range
+			// weekEnd is exclusive, so show the last day as weekEnd - 1 day
+			displayEnd := weekEnd.AddDate(0, 0, -1)
+			if displayEnd.After(maxDate) {
+				displayEnd = maxDate
+			}
+
+			cells = append(cells, timelineCell{
+				X:     x,
+				Width: width,
+				Label: fmt.Sprintf("%s - %s", weekStart.Format("Jan 2"), displayEnd.Format("Jan 2")),
+			})
+
+			current = weekEnd
+		}
+	}
+
+	return cells
 }
 
 // RenderSVG generates an SVG Gantt chart
@@ -157,7 +270,10 @@ func RenderSVG(project *model.Project) (string, error) {
 	effectiveTimelineWidth := float64(timelineWidth) - milestonePadding
 
 	rowHeight := 40
-	headerHeight := 80
+	headerHeight := 90
+
+	// Generate timeline header cells
+	timelineCells := generateTimelineCells(minDate, maxDate, timelineWidth, milestonePadding)
 
 	// Build SVG tasks
 	var svgTasks []svgTask
@@ -234,6 +350,7 @@ func RenderSVG(project *model.Project) (string, error) {
 		Height:        totalHeight,
 		TimelineWidth: timelineWidth,
 		Tasks:         svgTasks,
+		TimelineCells: timelineCells,
 	}
 
 	tmpl, err := template.New("gantt").Parse(svgTemplate)
