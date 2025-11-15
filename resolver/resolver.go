@@ -94,7 +94,10 @@ func resolveTask(task *model.Task, taskMap map[string]*model.Task, calMap map[st
 
 	// Case 4: Calculate from dependencies
 	if len(task.Dependencies) > 0 {
-		var maxDate time.Time
+		var startConstraint time.Time
+		var endConstraint time.Time
+		hasStartConstraint := false
+		hasEndConstraint := false
 
 		for _, dep := range task.Dependencies {
 			depTask, ok := taskMap[dep.TaskName]
@@ -107,49 +110,86 @@ func resolveTask(task *model.Task, taskMap map[string]*model.Task, calMap map[st
 				return err
 			}
 
-			var candidateDate time.Time
-
 			switch dep.Type {
 			case model.FinishToStart:
+				// Task starts when dependency finishes
 				if depTask.CalculatedEnd != nil {
-					candidateDate = *depTask.CalculatedEnd
+					if !hasStartConstraint || depTask.CalculatedEnd.After(startConstraint) {
+						startConstraint = *depTask.CalculatedEnd
+						hasStartConstraint = true
+					}
 				}
-			case model.StartToStart:
-				if depTask.CalculatedStart != nil {
-					candidateDate = *depTask.CalculatedStart
-				}
-			case model.FinishToFinish:
-				// Task must finish when dependency finishes
-				// So start = finish - duration
-				if depTask.CalculatedEnd != nil && task.Duration > 0 {
-					// Calculate backwards
-					candidateDate = depTask.CalculatedEnd.AddDate(0, 0, -task.Duration)
-				}
-			case model.StartToFinish:
-				// Task must finish when dependency starts
-				if depTask.CalculatedStart != nil {
-					candidateDate = *depTask.CalculatedStart
-					// This is the end date, not start
-				}
-			default:
-				candidateDate = *depTask.CalculatedEnd
-			}
 
-			if candidateDate.After(maxDate) {
-				maxDate = candidateDate
+			case model.StartToStart:
+				// Task starts when dependency starts
+				if depTask.CalculatedStart != nil {
+					if !hasStartConstraint || depTask.CalculatedStart.After(startConstraint) {
+						startConstraint = *depTask.CalculatedStart
+						hasStartConstraint = true
+					}
+				}
+
+			case model.FinishToFinish:
+				// Task finishes when dependency finishes
+				if depTask.CalculatedEnd != nil {
+					if !hasEndConstraint || depTask.CalculatedEnd.After(endConstraint) {
+						endConstraint = *depTask.CalculatedEnd
+						hasEndConstraint = true
+					}
+				}
+
+			case model.StartToFinish:
+				// Task finishes when dependency starts
+				if depTask.CalculatedStart != nil {
+					if !hasEndConstraint || depTask.CalculatedStart.After(endConstraint) {
+						endConstraint = *depTask.CalculatedStart
+						hasEndConstraint = true
+					}
+				}
+
+			default:
+				// Treat unknown types as finish-to-start
+				if depTask.CalculatedEnd != nil {
+					if !hasStartConstraint || depTask.CalculatedEnd.After(startConstraint) {
+						startConstraint = *depTask.CalculatedEnd
+						hasStartConstraint = true
+					}
+				}
 			}
 		}
 
-		// For most dependency types, maxDate is the start
-		// Special handling for finish-based dependencies done above
-		task.CalculatedStart = &maxDate
-
-		if task.Duration > 0 {
-			end := calendar.AddBusinessDays(maxDate, task.Duration, cal)
-			task.CalculatedEnd = &end
+		// Resolve based on constraint types
+		if hasStartConstraint && hasEndConstraint {
+			// Both constraints: use start constraint, calculate end from duration
+			// (This is a simplification; real MS Project would check for conflicts)
+			task.CalculatedStart = &startConstraint
+			if task.Duration > 0 {
+				end := calendar.AddBusinessDays(startConstraint, task.Duration, cal)
+				task.CalculatedEnd = &end
+			} else {
+				task.CalculatedEnd = &endConstraint
+			}
+		} else if hasStartConstraint {
+			// Only start constraint: calculate normally
+			task.CalculatedStart = &startConstraint
+			if task.Duration > 0 {
+				end := calendar.AddBusinessDays(startConstraint, task.Duration, cal)
+				task.CalculatedEnd = &end
+			} else {
+				task.CalculatedEnd = &startConstraint
+			}
+		} else if hasEndConstraint {
+			// Only end constraint: calculate backwards from end
+			task.CalculatedEnd = &endConstraint
+			if task.Duration > 0 {
+				// Calculate start by subtracting duration (rough approximation)
+				start := endConstraint.AddDate(0, 0, -task.Duration)
+				task.CalculatedStart = &start
+			} else {
+				task.CalculatedStart = &endConstraint
+			}
 		} else {
-			// Milestone
-			task.CalculatedEnd = &maxDate
+			return fmt.Errorf("task %s has dependencies but none could be resolved", task.Name)
 		}
 
 		return nil
