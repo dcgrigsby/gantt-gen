@@ -185,6 +185,44 @@ func TestParse_CalendarTable(t *testing.T) {
 	}
 }
 
+func TestParse_DurationUnits(t *testing.T) {
+	tests := []struct {
+		duration string
+		want     int
+	}{
+		{"5d", 5},
+		{"2w", 10},  // 2 weeks * 5 business days
+		{"1m", 20},  // 1 month * 20 business days
+		{"3m", 60},  // 3 months * 20 business days
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.duration, func(t *testing.T) {
+			input := fmt.Sprintf(`# Project
+
+## Task
+
+| Property | Value |
+|----------|-------|
+| Duration | %s |
+`, tt.duration)
+
+			project, err := Parse([]byte(input))
+			if err != nil {
+				t.Fatalf("Parse() error = %v", err)
+			}
+
+			if len(project.Tasks) != 1 {
+				t.Fatalf("len(tasks) = %d, want 1", len(project.Tasks))
+			}
+
+			if project.Tasks[0].Duration != tt.want {
+				t.Errorf("Duration = %d, want %d", project.Tasks[0].Duration, tt.want)
+			}
+		})
+	}
+}
+
 func TestParse_ManyTasks_NoPointerBug(t *testing.T) {
 	// Create enough tasks to force slice reallocation (>32 triggers new backing array)
 	var input strings.Builder

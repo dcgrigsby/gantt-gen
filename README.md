@@ -169,7 +169,10 @@ Projects are defined using markdown with special table syntax:
 | Calendar | BusinessDays |
 ```
 
-**Duration**: Number followed by unit (d=days, w=weeks)
+**Duration**: Number followed by unit:
+- `d` = business days
+- `w` = work weeks (5 business days each)
+- `m` = months (~4 work weeks = 20 business days each)
 
 **Calendar**: Optional calendar name for business day calculation
 

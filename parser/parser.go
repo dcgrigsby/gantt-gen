@@ -286,7 +286,9 @@ func parseDuration(s string) int {
 	case 'd':
 		return num
 	case 'w':
-		return num * 7
+		return num * 5 // 5 business days per week
+	case 'm':
+		return num * 20 // ~4 weeks per month
 	default:
 		return 0
 	}
