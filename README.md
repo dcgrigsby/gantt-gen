@@ -7,12 +7,12 @@ A Go CLI tool that generates beautiful Gantt charts from markdown files.
 ## Features
 
 - 📝 Write project plans in readable markdown
-- 🔗 Link tasks to external tools (Jira, GitHub issues, etc.)
-- 📅 Flexible date formats (ISO 8601 or natural language)
+- 📅 Flexible date formats (ISO 8601)
 - 🔄 Dependency management (finish-to-start, start-to-start, finish-to-finish, start-to-finish)
 - 📆 Calendar support (weekends, holidays, business days)
 - 🎨 Multiple output formats: SVG, HTML, and Confluence
 - 📊 Interactive formats with fixed task column and scrollable timeline
+- 💨 stdin/stdout support for piping and integration
 - ⚡ Fast and standalone (no dependencies at runtime)
 
 ## Quick Start
@@ -111,6 +111,24 @@ gantt-gen --format=html input.md output.html
 gantt-gen --format=confluence input.md output.html
 ```
 
+### Using stdin/stdout
+
+Use `-` to read from stdin or write to stdout for piping and integration:
+
+```bash
+# Read from stdin, write to stdout
+cat input.md | gantt-gen - - > output.svg
+
+# Read file, write to stdout
+gantt-gen input.md - > output.svg
+
+# Read from stdin, write to file
+gantt-gen - output.svg < input.md
+
+# Pipe between commands
+curl https://example.com/project.md | gantt-gen - - | compress > output.svg.gz
+```
+
 ### Output Formats
 
 #### SVG (default)
@@ -147,15 +165,12 @@ Projects are defined using markdown with special table syntax:
 | Start | 2024-01-01 |
 | End | 2024-01-15 |
 | Duration | 10d |
-| Link | https://jira.com/PROJ-123 |
 | Calendar | BusinessDays |
 ```
 
 **Dates**: ISO 8601 format (YYYY-MM-DD)
 
 **Duration**: Number followed by unit (d=days, w=weeks, m=months)
-
-**Link**: Optional URL to external tracking system
 
 **Calendar**: Optional calendar name for business day calculation
 
@@ -233,6 +248,9 @@ gantt-gen --format=html examples/sample-project.md output.html
 
 # Confluence-ready HTML
 gantt-gen --format=confluence examples/sample-project.md output.html
+
+# Using stdin/stdout
+cat examples/sample-project.md | gantt-gen - - > output.svg
 ```
 
 Pre-generated examples are available in the `examples/` directory.

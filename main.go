@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -19,7 +20,8 @@ func main() {
 	// Check remaining arguments
 	args := flag.Args()
 	if len(args) < 2 {
-		fmt.Fprintf(os.Stderr, "Usage: %s [--format=svg|html|confluence] <input.md> <output-file>\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s [--format=svg|html|confluence] <input.md|-> <output-file|->\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Use '-' for stdin (input) or stdout (output)\n")
 		os.Exit(1)
 	}
 
@@ -33,11 +35,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Read input file
-	input, err := os.ReadFile(inputPath)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading input file: %v\n", err)
-		os.Exit(1)
+	// Read input file or stdin
+	var input []byte
+	if inputPath == "-" {
+		var err error
+		input, err = io.ReadAll(os.Stdin)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading from stdin: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		var err error
+		input, err = os.ReadFile(inputPath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading input file: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	// Parse markdown
@@ -82,11 +95,17 @@ func main() {
 		}
 	}
 
-	// Write output file
-	if err := os.WriteFile(outputPath, []byte(output), 0644); err != nil {
-		fmt.Fprintf(os.Stderr, "Error writing output file: %v\n", err)
-		os.Exit(1)
+	// Write output file or stdout
+	if outputPath == "-" {
+		if _, err := os.Stdout.WriteString(output); err != nil {
+			fmt.Fprintf(os.Stderr, "Error writing to stdout: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		if err := os.WriteFile(outputPath, []byte(output), 0644); err != nil {
+			fmt.Fprintf(os.Stderr, "Error writing output file: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Fprintf(os.Stderr, "✓ Generated Gantt chart (%s): %s\n", outputFormat, outputPath)
 	}
-
-	fmt.Printf("✓ Generated Gantt chart (%s): %s\n", outputFormat, outputPath)
 }
