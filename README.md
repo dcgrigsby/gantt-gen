@@ -32,6 +32,27 @@ go build
 gantt-gen input.md output.svg
 ```
 
+## Validation
+
+The tool validates your input and provides helpful error messages:
+
+```bash
+$ gantt-gen project.md output.svg
+Validation error: duplicate task name: Implementation
+```
+
+Common validation errors:
+- Duplicate task names (must be unique)
+- Task names over 200 characters
+- Dependencies on non-existent tasks
+- Calendar references to non-existent calendars
+
+## Limitations
+
+- Maximum 1000 tasks per project
+- Maximum 200 characters per task name (longer names are truncated in output)
+- Dependency logic uses simplified constraints (see docs/format.md)
+
 ## Markdown Format
 
 See [docs/format.md](docs/format.md) for complete format specification.
