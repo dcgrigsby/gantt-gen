@@ -2,23 +2,87 @@
 
 A Go CLI tool that generates beautiful Gantt charts from markdown files.
 
+![Example Gantt Chart](examples/sample-output.svg)
+
 ## Features
 
 - 📝 Write project plans in readable markdown
 - 🔗 Link tasks to external tools (Jira, GitHub issues, etc.)
 - 📅 Flexible date formats (ISO 8601 or natural language)
-- 🔄 Dependency management (finish-to-start, start-to-start, etc.)
+- 🔄 Dependency management (finish-to-start, start-to-start, finish-to-finish, start-to-finish)
 - 📆 Calendar support (weekends, holidays, business days)
-- 🎨 SVG output format
+- 🎨 Multiple output formats: SVG, HTML, and Confluence
+- 📊 Interactive formats with fixed task column and scrollable timeline
 - ⚡ Fast and standalone (no dependencies at runtime)
+
+## Quick Start
+
+```bash
+# Install
+go install github.com/yourusername/gantt-gen@latest
+
+# Generate a Gantt chart
+gantt-gen project.md output.svg
+```
+
+## Example Input
+
+```markdown
+# Software Development Project
+
+## Design Phase
+
+| Property | Value |
+|----------|-------|
+| Start | 2024-01-02 |
+| Duration | 14d |
+
+## Implementation
+
+| Property | Value |
+|----------|-------|
+| Duration | 21d |
+
+| Depends On | Type |
+|------------|------|
+| Design Phase | finish-to-start |
+
+### Backend Development
+
+| Property | Value |
+|----------|-------|
+| Duration | 14d |
+
+| Depends On | Type |
+|------------|------|
+| Design Phase | finish-to-start |
+
+### Frontend Development
+
+| Property | Value |
+|----------|-------|
+| Duration | 16d |
+
+| Depends On | Type |
+|------------|------|
+| Design Phase | finish-to-start |
+
+## Testing
+
+| Property | Value |
+|----------|-------|
+| Duration | 7d |
+
+| Depends On | Type |
+|------------|------|
+| Implementation | finish-to-start |
+```
+
+This generates the chart shown at the top of this README.
 
 ## Installation
 
-```bash
-go install github.com/yourusername/gantt-gen@latest
-```
-
-Or build from source:
+### From Source
 
 ```bash
 git clone https://github.com/yourusername/gantt-gen.git
@@ -26,11 +90,152 @@ cd gantt-gen
 go build
 ```
 
-## Usage
+### Using Go Install
 
 ```bash
-gantt-gen input.md output.svg
+go install github.com/yourusername/gantt-gen@latest
 ```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Generate SVG (default)
+gantt-gen input.md output.svg
+
+# Generate interactive HTML page
+gantt-gen --format=html input.md output.html
+
+# Generate Confluence-compatible HTML
+gantt-gen --format=confluence input.md output.html
+```
+
+### Output Formats
+
+#### SVG (default)
+Static image suitable for:
+- Embedding in documentation
+- Printing or presentations
+- Sharing as standalone files
+
+#### HTML
+Full interactive page with:
+- Fixed task names column on the left
+- Horizontally scrollable timeline on the right
+- Synchronized vertical scrolling
+- Perfect for reviewing large projects in a browser
+
+#### Confluence
+Minimal HTML snippet with:
+- Sticky task column (stays fixed during scroll)
+- Optimized for Confluence HTML macro
+- Includes usage instructions in output
+- Copy-paste directly into Confluence pages
+
+## Markdown Format
+
+Projects are defined using markdown with special table syntax:
+
+### Task Properties
+
+```markdown
+## Task Name
+
+| Property | Value |
+|----------|-------|
+| Start | 2024-01-01 |
+| End | 2024-01-15 |
+| Duration | 10d |
+| Link | https://jira.com/PROJ-123 |
+| Calendar | BusinessDays |
+```
+
+**Dates**: ISO 8601 format (YYYY-MM-DD)
+
+**Duration**: Number followed by unit (d=days, w=weeks, m=months)
+
+**Link**: Optional URL to external tracking system
+
+**Calendar**: Optional calendar name for business day calculation
+
+### Dependencies
+
+```markdown
+| Depends On | Type |
+|------------|------|
+| Task Name | finish-to-start |
+| Another Task | start-to-start |
+```
+
+**Dependency Types**:
+- `finish-to-start`: Start after dependency finishes (default)
+- `start-to-start`: Start when dependency starts
+- `finish-to-finish`: Finish when dependency finishes
+- `start-to-finish`: Finish when dependency starts
+
+### Task Hierarchy
+
+Use markdown heading levels to create subtasks:
+
+```markdown
+# Project Name
+
+## Phase 1 (Level 2)
+
+### Subtask A (Level 3)
+
+#### Sub-subtask (Level 4)
+```
+
+### Milestones
+
+Omit duration and end date to create a milestone:
+
+```markdown
+## Launch Milestone
+
+| Property | Value |
+|----------|-------|
+| Start | 2024-03-01 |
+```
+
+### Calendars
+
+Define custom calendars for business day calculations:
+
+```markdown
+### Calendar: BusinessDays
+
+- Monday: 8h
+- Tuesday: 8h
+- Wednesday: 8h
+- Thursday: 8h
+- Friday: 8h
+- Saturday: 0h
+- Sunday: 0h
+- Holiday: 2024-01-01
+- Holiday: 2024-12-25
+```
+
+## Examples
+
+See `examples/sample-project.md` for a complete example.
+
+Generate examples in different formats:
+
+```bash
+# SVG format
+gantt-gen examples/sample-project.md output.svg
+
+# Interactive HTML
+gantt-gen --format=html examples/sample-project.md output.html
+
+# Confluence-ready HTML
+gantt-gen --format=confluence examples/sample-project.md output.html
+```
+
+Pre-generated examples are available in the `examples/` directory.
 
 ## Validation
 
@@ -51,45 +256,7 @@ Common validation errors:
 
 - Maximum 1000 tasks per project
 - Maximum 200 characters per task name (longer names are truncated in output)
-- Dependency logic uses simplified constraints (see docs/format.md)
-
-## Markdown Format
-
-See [docs/format.md](docs/format.md) for complete format specification.
-
-### Quick Example
-
-```markdown
-# My Project
-
-## Design Phase
-
-| Property | Value |
-|----------|-------|
-| Start | 2024-01-01 |
-| Duration | 5d |
-| Link | https://jira.com/PROJ-123 |
-
-## Implementation
-
-| Property | Value |
-|----------|-------|
-| Duration | 10d |
-
-| Depends On | Type |
-|------------|------|
-| Design Phase | finish-to-start |
-```
-
-## Examples
-
-See `examples/sample-project.md` for a complete example project.
-
-Generate the example:
-
-```bash
-gantt-gen examples/sample-project.md examples/output.svg
-```
+- Dependency logic uses simplified constraints
 
 ## Development
 
@@ -107,4 +274,4 @@ go build
 
 ## License
 
-MIT License - see LICENSE file for details.
+Apache License 2.0 - see [LICENSE](LICENSE) file for details.

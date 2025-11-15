@@ -18,3 +18,11 @@ examples/test-output.*
 *.swp
 *.swo
 *~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local development
+CLAUDE.md
+*.local.md
